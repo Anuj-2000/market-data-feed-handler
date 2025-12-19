@@ -1,0 +1,91 @@
+# Build directories
+build/
+cmake-build-*/
+out/
+
+# Compiled Object files
+*.o
+*.obj
+*.ko
+*.elf
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+exchange_simulator
+feed_handler
+benchmark_latency
+unit_tests
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Profiling data
+*.prof
+perf.data
+perf.data.old
+callgrind.out.*
+cachegrind.out.*
+massif.out.*
+
+# Valgrind logs
+valgrind-*.log
+*.memcheck
+
+# Core dumps
+core
+core.*
+
+# IDE specific
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Test outputs
+Testing/
+test_results/
+*.log
+
+# Benchmark results (we'll commit processed results in docs/)
+benchmarks/raw_*.csv
+benchmarks/*.dat
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Personal notes (keep your own scratch notes private)
+NOTES.md
+TODO.txt
+scratch/
