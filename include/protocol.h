@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <cstring>
+#include <chrono>
 
 namespace protocol {
 
@@ -14,7 +15,7 @@ enum class MessageType : uint16_t {
 };
 
 // Message header (16 bytes)
-struct __attribute__((packed)) MessageHeader {
+struct MessageHeader {
     MessageType msg_type;      // 2 bytes
     uint32_t sequence_number;  // 4 bytes
     uint64_t timestamp_ns;     // 8 bytes (nanoseconds since epoch)
@@ -24,52 +25,52 @@ struct __attribute__((packed)) MessageHeader {
                       sequence_number(0), 
                       timestamp_ns(0), 
                       symbol_id(0) {}
-};
+} __attribute__((packed));
 
 // Trade payload (12 bytes)
-struct __attribute__((packed)) TradePayload {
+struct TradePayload {
     double price;          // 8 bytes
     uint32_t quantity;     // 4 bytes
-};
+} __attribute__((packed));
 
 // Quote payload (28 bytes)
-struct __attribute__((packed)) QuotePayload {
+struct QuotePayload {
     double bid_price;      // 8 bytes
     uint32_t bid_quantity; // 4 bytes
     double ask_price;      // 8 bytes
     uint32_t ask_quantity; // 4 bytes
-};
+} __attribute__((packed));
 
 // Complete message structures
-struct __attribute__((packed)) TradeMessage {
+struct TradeMessage {
     MessageHeader header;
     TradePayload payload;
     uint32_t checksum;     // XOR of all previous bytes
     
     static constexpr size_t SIZE = sizeof(MessageHeader) + sizeof(TradePayload) + sizeof(uint32_t);
-};
+} __attribute__((packed));
 
-struct __attribute__((packed)) QuoteMessage {
+struct QuoteMessage {
     MessageHeader header;
     QuotePayload payload;
     uint32_t checksum;
     
     static constexpr size_t SIZE = sizeof(MessageHeader) + sizeof(QuotePayload) + sizeof(uint32_t);
-};
+} __attribute__((packed));
 
-struct __attribute__((packed)) HeartbeatMessage {
+struct HeartbeatMessage {
     MessageHeader header;
     uint32_t checksum;
     
     static constexpr size_t SIZE = sizeof(MessageHeader) + sizeof(uint32_t);
-};
+} __attribute__((packed));
 
 // Subscription message (Client -> Server)
-struct __attribute__((packed)) SubscriptionHeader {
+struct SubscriptionHeader {
     uint8_t command;       // 0xFF for subscribe
     uint16_t count;        // Number of symbols
     // Followed by array of uint16_t symbol_ids
-};
+} __attribute__((packed));
 
 // Utility functions
 inline uint32_t calculate_checksum(const void* data, size_t len) {
@@ -109,9 +110,9 @@ inline size_t get_message_size(MessageType type) {
 
 // Helper to get current time in nanoseconds
 inline uint64_t get_timestamp_ns() {
-    struct timespec ts;
-    clock_gettime(CLOCK_REALTIME, &ts);
-    return static_cast<uint64_t>(ts.tv_sec) * 1000000000ULL + ts.tv_nsec;
+    auto now = std::chrono::high_resolution_clock::now();
+    auto duration = now.time_since_epoch();
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
 }
 
 } // namespace protocol
